@@ -1,4 +1,4 @@
-The attached is the refactored products api project.
+Attached is the products Web Api project.
 
 ## Instructions
 
