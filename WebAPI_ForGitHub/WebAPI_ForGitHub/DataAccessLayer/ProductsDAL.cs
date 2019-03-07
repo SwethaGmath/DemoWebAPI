@@ -10,7 +10,6 @@ namespace WebAPI_ForGitHub.DataAccessLayer
     public class ProductsDAL:IProductsDAL, IDisposable
     {
         private DatabaseEntities _db;
-        //private DatabaseEntities db = new DatabaseEntities();
         private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         public List<Product> LoadProducts(string where)
@@ -82,37 +81,58 @@ namespace WebAPI_ForGitHub.DataAccessLayer
             }
             catch (Exception e)
             {
-                Logger.Error("Exception occured", e.StackTrace);
+                Logger.Error(e, e.StackTrace);
                 return false;
             }
         }
         public bool Save(Product product)
         {
-            using (_db = new DatabaseEntities())
-            {
-                _db.Products.Add(product);
-                if (_db.SaveChanges() == 1)
-                    return true;
-                else
-                    return false;
-            }
+            //developer :commented Try catch to check global exception handler
+            //try
+            //{
+            
+                using (_db = new DatabaseEntities())
+                {
+                    _db.Products.Add(product);
+                
+                    if(_db.SaveChanges() == 1)
+                            return true;
+                    else
+                            return false;
+                }
+            //}
+            //catch (Exception e)
+            //{
+            //    Logger.Error(e, e.StackTrace);
+            //    return false;
+            //}
+            
         }
 
         public bool Delete(Guid id)
         {
-            using (_db = new DatabaseEntities())
+            try
             {
-                var productToRemove = _db.Products.First(p => p.Id == id);
-                if (productToRemove != null)
+                using (_db = new DatabaseEntities())
                 {
-                    _db.Products.Remove(productToRemove);
-                    if (_db.SaveChanges() == 1)
-                        return true;
+                    var productToRemove = _db.Products.First(p => p.Id == id);
+                    if (productToRemove != null)
+                    {
+                        _db.Products.Remove(productToRemove);
+                        if (_db.SaveChanges() == 1)
+                            return true;
+                        else
+                            return false;
+                    }
                     else
                         return false;
                 }
-                else
-                    return false;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(e, e.StackTrace);
+                return false;
+
             }
         }
 
@@ -128,7 +148,7 @@ namespace WebAPI_ForGitHub.DataAccessLayer
             }
             catch (Exception e)
             {
-                Logger.Error("Exception occured", e.StackTrace);
+                Logger.Error(e, e.StackTrace);
             }
             return li;
         }
@@ -144,7 +164,7 @@ namespace WebAPI_ForGitHub.DataAccessLayer
             }
             catch (Exception e)
             {
-                Logger.Error("Exception occured", e.StackTrace);
+                Logger.Error(e, e.StackTrace);
             }
             return prodOpt;
         }
@@ -169,7 +189,7 @@ namespace WebAPI_ForGitHub.DataAccessLayer
             }
             catch (Exception e)
             {
-                Logger.Error("Exception occured", e.StackTrace);
+                Logger.Error(e.Message, e.StackTrace);
                 return false;
             }
 
@@ -195,7 +215,7 @@ namespace WebAPI_ForGitHub.DataAccessLayer
             }
             catch (Exception e)
             {
-                Logger.Error("Exception occured ", e.StackTrace);
+                Logger.Error(e.Message, e.StackTrace);
                 return false;
             }
         }
@@ -221,7 +241,7 @@ namespace WebAPI_ForGitHub.DataAccessLayer
             }
             catch (Exception e)
             {
-                Logger.Error("Exception occured ", e.StackTrace);
+                Logger.Error(e.Message, e.StackTrace);
                 return false;
             }
         }
